@@ -9,7 +9,7 @@
   --orange: #ea580c;
 }
 
-body.dark {
+.dark body {
   --bg: #0b1220;
   --card: #020617;
   --text: #e5e7eb;
