@@ -1,65 +1,62 @@
-function calculate() {
+const inputs = ["rice","oats","chicken","wholeEgg","eggWhite","whey","gainer","milk"];
+
+function calculateTotals() {
   let calories = 0;
   let protein = 0;
 
-  for (let key in FOOD_DATA) {
-    let input = document.getElementById(key);
-    if (!input) continue;
-
-    let value = Number(input.value || 0);
+  inputs.forEach(key => {
+    let val = Number(document.getElementById(key).value || 0);
     let factor =
-      key === "rice" || key === "oats" || key === "chicken"
-        ? value / 100
-        : key === "milk"
-        ? value / 100
-        : value;
+      ["rice","oats","chicken"].includes(key) ? val / 100 :
+      key === "milk" ? val / 100 : val;
 
     calories += factor * FOOD_DATA[key].calories;
     protein += factor * FOOD_DATA[key].protein;
-  }
+  });
 
-  document.getElementById("calories").innerText =
-    "Calories: " + Math.round(calories);
-  document.getElementById("protein").innerText =
-    "Protein: " + Math.round(protein);
+  document.getElementById("calories").innerText = `Calories: ${Math.round(calories)}`;
+  document.getElementById("protein").innerText = `Protein: ${Math.round(protein)}`;
 
   let target = Number(document.getElementById("targetCalories").value || 0);
   let diff = calories - target;
 
-  let statusEl = document.getElementById("status");
-  statusEl.className = "";
+  let status = document.getElementById("status");
+  status.className = "";
 
-  if (diff < -200) {
-    statusEl.innerText = "Under";
-    statusEl.classList.add("under");
-  } else if (Math.abs(diff) <= 200) {
-    statusEl.innerText = "On Track";
-    statusEl.classList.add("ontrack");
-  } else {
-    statusEl.innerText = "Over";
-    statusEl.classList.add("over");
-  }
+  if (diff < -200) { status.innerText = "Under"; status.classList.add("under"); }
+  else if (Math.abs(diff) <= 200) { status.innerText = "On Track"; status.classList.add("ontrack"); }
+  else { status.innerText = "Over"; status.classList.add("over"); }
+
+  return { calories, protein };
 }
 
-document.addEventListener("input", calculate);
+document.addEventListener("input", calculateTotals);
 
 document.getElementById("dayType")?.addEventListener("change", e => {
-  document.getElementById("targetCalories").value =
-    TARGETS[e.target.value];
+  document.getElementById("targetCalories").value = TARGETS[e.target.value];
 });
 
 function saveDay() {
+  const date = document.getElementById("logDate").value;
+  if (!date) { alert("Select a date"); return; }
+
+  let totals = calculateTotals();
   let log = JSON.parse(localStorage.getItem("log") || "[]");
 
-  log.push({
-    date: new Date().toISOString().slice(0, 10),
-    calories: document.getElementById("calories").innerText.replace(/\D/g,""),
-    protein: document.getElementById("protein").innerText.replace(/\D/g,""),
-    weight: Number(document.getElementById("weight").value || 0)
-  });
+  let entry = {
+    date,
+    calories: Math.round(totals.calories),
+    protein: Math.round(totals.protein),
+    weight: Number(document.getElementById("weight").value || 0),
+    target: Number(document.getElementById("targetCalories").value || 0)
+  };
+
+  let index = log.findIndex(d => d.date === date);
+  if (index >= 0) log[index] = entry;
+  else log.push(entry);
 
   localStorage.setItem("log", JSON.stringify(log));
-  alert("Saved");
+  alert("Saved / Updated");
 }
 
 if (window.location.pathname.includes("weekly")) {
@@ -67,28 +64,16 @@ if (window.location.pathname.includes("weekly")) {
   if (log.length < 7) return;
 
   let labels = log.map(d => d.date);
-  let calories = log.map(d => Number(d.calories));
-  let protein = log.map(d => Number(d.protein));
   let weight = log.map(d => d.weight);
+  let calories = log.map(d => d.calories);
+  let protein = log.map(d => d.protein);
 
-  new Chart(weightChart, {
-    type: "line",
-    data: { labels, datasets: [{ label: "Weight (kg)", data: weight }] }
-  });
-
-  new Chart(calorieChart, {
-    type: "line",
-    data: { labels, datasets: [{ label: "Calories", data: calories }] }
-  });
-
-  new Chart(proteinChart, {
-    type: "line",
-    data: { labels, datasets: [{ label: "Protein (g)", data: protein }] }
-  });
+  new Chart(weightChart, { type:"line", data:{ labels, datasets:[{label:"Weight (kg)", data:weight}] } });
+  new Chart(calorieChart, { type:"line", data:{ labels, datasets:[{label:"Calories", data:calories}] } });
+  new Chart(proteinChart, { type:"line", data:{ labels, datasets:[{label:"Protein (g)", data:protein}] } });
 
   let last7 = weight.slice(-7);
-  let prev7 = weight.slice(-14, -7);
-
+  let prev7 = weight.slice(-14,-7);
   let avgLast = last7.reduce((a,b)=>a+b,0)/last7.length;
   let avgPrev = prev7.length ? prev7.reduce((a,b)=>a+b,0)/prev7.length : avgLast;
   let change = avgLast - avgPrev;
@@ -98,9 +83,9 @@ if (window.location.pathname.includes("weekly")) {
     change <= 0.6 ? "Maintain" :
     "Reduce liquid calories";
 
-  document.getElementById("decisionBox").innerHTML = `
+  decisionBox.innerHTML = `
     <h2>Weekly Decision</h2>
     <p>Weekly Weight Change: ${change.toFixed(2)} kg</p>
-    <p><strong>${decision}</strong></p>
+    <strong>${decision}</strong>
   `;
 }
