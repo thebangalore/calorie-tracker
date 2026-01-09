@@ -1,28 +1,49 @@
+:root {
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --text: #111;
+  --muted: #6b7280;
+  --accent: #111;
+  --green: #16a34a;
+  --red: #dc2626;
+  --orange: #ea580c;
+}
+
+body.dark {
+  --bg: #0f172a;
+  --card: #020617;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #e5e7eb;
+}
+
 * { box-sizing: border-box; }
 
 body {
-  font-family: system-ui, sans-serif;
-  background: #f3f4f6;
   margin: 0;
-  padding: 10px;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 12px;
 }
 
-h1 {
+h1, h2 {
   text-align: center;
   margin: 10px 0;
 }
 
 .container {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
 }
 
 label {
-  display: block;
   font-size: 13px;
+  color: var(--muted);
   margin-top: 10px;
+  display: block;
 }
 
 input, select {
@@ -30,56 +51,62 @@ input, select {
   padding: 14px;
   margin-top: 6px;
   font-size: 16px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #ccc;
+  background: transparent;
+  color: var(--text);
 }
 
-table {
-  width: 100%;
-}
+table { width: 100%; }
 
-td {
-  padding: 6px 0;
-  font-size: 14px;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 14px 0;
-}
+td { padding: 6px 0; }
 
 button {
   width: 100%;
   padding: 16px;
-  font-size: 17px;
   border-radius: 14px;
   border: none;
-  background: #111;
-  color: #fff;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 16px;
 }
 
-#status {
-  margin-top: 12px;
-  padding: 14px;
+.progress {
+  height: 12px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+}
+
+.badge {
+  margin-top: 10px;
+  padding: 12px;
   border-radius: 12px;
   text-align: center;
   font-size: 18px;
 }
 
-.under { background: #fde2e2; color: #9b1c1c; }
-.ontrack { background: #dcfce7; color: #166534; }
-.over { background: #ffedd5; color: #9a3412; }
+.badge.under { background: #fee2e2; color: var(--red); }
+.badge.ontrack { background: #dcfce7; color: var(--green); }
+.badge.over { background: #ffedd5; color: var(--orange); }
 
-.sticky-save {
-  position: sticky;
-  bottom: 10px;
+.toggle {
+  text-align: right;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 a {
   display: block;
   text-align: center;
   margin-top: 12px;
+  color: var(--text);
   text-decoration: none;
-  color: #111;
 }
