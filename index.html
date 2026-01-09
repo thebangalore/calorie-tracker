@@ -6,60 +6,57 @@
 </head>
 <body>
 
-<div class="toggle" onclick="toggleTheme()">Dark Mode</div>
+<div class="toggle" id="themeToggle">Toggle Dark Mode</div>
 
 <h1>Daily Performance</h1>
 
 <div class="container">
+  <label>Date</label>
+  <input type="date" id="logDate">
 
-<label>Date</label>
-<input type="date" id="logDate">
+  <label>Day Type</label>
+  <select id="dayType">
+    <option value="training">Training Day</option>
+    <option value="rest">Rest Day</option>
+  </select>
 
-<label>Day Type</label>
-<select id="dayType">
-  <option value="training">Training Day</option>
-  <option value="rest">Rest Day</option>
-</select>
-
-<label>Target Calories</label>
-<input type="number" id="targetCalories">
-
+  <label>Target Calories</label>
+  <input type="number" id="targetCalories">
 </div>
 
 <div class="container">
-<table>
-<tr><td>Rice (g)</td><td><input id="rice" type="number"></td></tr>
-<tr><td>Oats (g)</td><td><input id="oats" type="number"></td></tr>
-<tr><td>Chicken (g)</td><td><input id="chicken" type="number"></td></tr>
-<tr><td>Whole Eggs</td><td><input id="wholeEgg" type="number"></td></tr>
-<tr><td>Egg Whites</td><td><input id="eggWhite" type="number"></td></tr>
-<tr><td>Whey Scoops</td><td><input id="whey" type="number"></td></tr>
-<tr><td>Mass Gainer</td><td><input id="gainer" type="number"></td></tr>
-<tr><td>Milk (ml)</td><td><input id="milk" type="number"></td></tr>
-</table>
+  <table>
+    <tr><td>Rice (g)</td><td><input id="rice" type="number"></td></tr>
+    <tr><td>Oats (g)</td><td><input id="oats" type="number"></td></tr>
+    <tr><td>Chicken (g)</td><td><input id="chicken" type="number"></td></tr>
+    <tr><td>Whole Eggs</td><td><input id="wholeEgg" type="number"></td></tr>
+    <tr><td>Egg Whites</td><td><input id="eggWhite" type="number"></td></tr>
+    <tr><td>Whey Scoops</td><td><input id="whey" type="number"></td></tr>
+    <tr><td>Mass Gainer</td><td><input id="gainer" type="number"></td></tr>
+    <tr><td>Milk (ml)</td><td><input id="milk" type="number"></td></tr>
+  </table>
 
-<label>Adhoc Calories</label>
-<input id="extraCalories" type="number">
+  <label>Adhoc Calories</label>
+  <input id="extraCalories" type="number">
 
-<label>Adhoc Protein</label>
-<input id="extraProtein" type="number">
+  <label>Adhoc Protein</label>
+  <input id="extraProtein" type="number">
 
-<label>Bodyweight (kg)</label>
-<input id="weight" type="number" step="0.1">
+  <label>Bodyweight (kg)</label>
+  <input id="weight" type="number" step="0.1">
 
-<h2 id="calories">Calories: 0</h2>
-<div class="progress"><div class="progress-fill" id="calProgress"></div></div>
+  <h2 id="caloriesText">Calories: 0</h2>
+  <div class="progress"><div class="progress-fill" id="calorieBar"></div></div>
 
-<h2 id="protein">Protein: 0</h2>
+  <h2 id="proteinText">Protein: 0</h2>
 
-<div id="statusBadge" class="badge">Status</div>
+  <div id="statusBadge" class="badge">Status</div>
 
-<p id="suggestion" style="text-align:center;margin-top:10px;"></p>
+  <h2>Progress Score: <span id="score">0</span>/100</h2>
 
-<button onclick="saveDay()">Save / Update</button>
+  <button id="saveBtn">Save or Update</button>
 
-<a href="weekly.html">Weekly Intelligence</a>
-
+  <a href="weekly.html">Weekly Intelligence</a>
 </div>
 
 <script src="data.js"></script>
