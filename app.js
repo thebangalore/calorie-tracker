@@ -1,20 +1,22 @@
 const foodKeys = ["rice","oats","chicken","wholeEgg","eggWhite","whey","gainer","milk"];
 
-function toggleTheme() {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme", document.body.classList.contains("dark"));
-}
-
-if (localStorage.getItem("theme") === "true") {
+const themeToggle = document.getElementById("themeToggle");
+if (localStorage.getItem("darkMode") === "true") {
   document.body.classList.add("dark");
 }
 
-document.getElementById("dayType")?.addEventListener("change", e => {
-  document.getElementById("targetCalories").value = TARGETS[e.target.value];
-});
+themeToggle.onclick = () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+};
+
+dayType.onchange = () => {
+  targetCalories.value = TARGETS[dayType.value];
+};
 
 function calculate() {
-  let calories = 0, protein = 0;
+  let calories = 0;
+  let protein = 0;
 
   foodKeys.forEach(k => {
     let v = Number(document.getElementById(k).value || 0);
@@ -29,35 +31,48 @@ function calculate() {
   calories = Math.round(calories);
   protein = Math.round(protein);
 
-  calProgress.style.width = Math.min(100,(calories/targetCalories.value)*100) + "%";
+  caloriesText.innerText = `Calories: ${calories}`;
+  proteinText.innerText = `Protein: ${protein}`;
 
-  caloriesEl.innerText = `Calories: ${calories}`;
-  proteinEl.innerText = `Protein: ${protein}`;
+  let target = Number(targetCalories.value || 1);
+  calorieBar.style.width = Math.min(100, (calories / target) * 100) + "%";
 
-  let diff = calories - targetCalories.value;
+  let diff = calories - target;
   statusBadge.className = "badge";
 
   if (diff < -200) {
     statusBadge.innerText = "Under Target";
     statusBadge.classList.add("under");
-    suggestion.innerText = "Add rice or liquid calories";
   } else if (Math.abs(diff) <= 200) {
     statusBadge.innerText = "On Track";
     statusBadge.classList.add("ontrack");
-    suggestion.innerText = "Perfect execution today";
   } else {
     statusBadge.innerText = "Over Target";
     statusBadge.classList.add("over");
-    suggestion.innerText = "Control liquid calories";
   }
+
+  let calorieScore = Math.max(0, 50 - Math.abs(diff) / 4);
+  let proteinScore = Math.min(30, (protein / PROTEIN_TARGET) * 30);
+
+  let weeklyScore = 20;
+  let log = JSON.parse(localStorage.getItem("log") || "[]");
+  if (log.length >= 14) {
+    let last = log.slice(-7).reduce((a,b)=>a+b.weight,0)/7;
+    let prev = log.slice(-14,-7).reduce((a,b)=>a+b.weight,0)/7;
+    let change = last - prev;
+    weeklyScore = change >= 0.3 && change <= 0.6 ? 20 : 10;
+  }
+
+  let totalScore = Math.round(calorieScore + proteinScore + weeklyScore);
+  score.innerText = Math.min(100, totalScore);
 
   return { calories, protein };
 }
 
 document.addEventListener("input", calculate);
 
-function saveDay() {
-  if (!logDate.value) return alert("Select date");
+saveBtn.onclick = () => {
+  if (!logDate.value) return alert("Select a date");
   let totals = calculate();
   let log = JSON.parse(localStorage.getItem("log") || "[]");
 
@@ -74,21 +89,22 @@ function saveDay() {
 
   localStorage.setItem("log", JSON.stringify(log));
   alert("Saved");
-}
+};
 
 if (location.pathname.includes("weekly")) {
   let log = JSON.parse(localStorage.getItem("log") || "[]");
   if (log.length < 7) return;
 
   let labels = log.map(d=>d.date);
-  let w = log.map(d=>d.weight);
-  let c = log.map(d=>d.calories);
+  let weights = log.map(d=>d.weight);
+  let calories = log.map(d=>d.calories);
 
-  new Chart(weightChart,{type:"line",data:{labels,datasets:[{label:"Weight",data:w}]}})
-  new Chart(calorieChart,{type:"line",data:{labels,datasets:[{label:"Calories",data:c}]}})
+  new Chart(weightChart,{type:"line",data:{labels,datasets:[{label:"Weight",data:weights}]}})
+  new Chart(calorieChart,{type:"line",data:{labels,datasets:[{label:"Calories",data:calories}]}})
 
-  let last = w.slice(-7), prev = w.slice(-14,-7);
-  let change = (last.reduce((a,b)=>a+b,0)/7)-(prev.reduce((a,b)=>a+b,0)/7||0);
+  let last = weights.slice(-7);
+  let prev = weights.slice(-14,-7);
+  let change = (last.reduce((a,b)=>a+b,0)/7) - (prev.reduce((a,b)=>a+b,0)/7 || 0);
 
   decisionBox.innerHTML = `
     <h2>Coach Verdict</h2>
