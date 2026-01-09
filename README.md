@@ -1,15 +1,11 @@
-Muscle Bulk Tracker
+Muscle Bulk System
 
-A mobile friendly calorie and protein tracker designed for Indian dirty bulking with control.
+Enterprise grade personal nutrition and weight gain system.
 
-Features
-- Training and rest day targets
-- Daily calorie and protein tracking
-- Weekly summary with graphs
-- Automatic food adjustment logic
-- Runs fully in browser using local storage
+Built for:
+- Dirty bulk with control
+- Indian diet
+- Minimal daily effort
+- Objective weekly decisions
 
-Deployment
-1. Upload files to GitHub repo
-2. Enable GitHub Pages from /docs folder
-3. Open your site and start tracking
+Runs fully in browser with no backend.
