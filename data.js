@@ -13,3 +13,5 @@ const TARGETS = {
   training: 3000,
   rest: 2500
 };
+
+const PROTEIN_TARGET = 140;
