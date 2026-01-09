@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Muscle Bulk Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Daily Tracker</h1>
+
+<div class="container">
+
+<label>Day Type</label>
+<select id="dayType">
+  <option value="training">Training Day</option>
+  <option value="rest">Rest Day</option>
+</select>
+
+<label>Target Calories</label>
+<input type="number" id="targetCalories">
+
+<hr>
+
+<table>
+<tr><td>Rice (g)</td><td><input id="rice" type="number"></td></tr>
+<tr><td>Oats (g)</td><td><input id="oats" type="number"></td></tr>
+<tr><td>Chicken (g)</td><td><input id="chicken" type="number"></td></tr>
+<tr><td>Whole Eggs</td><td><input id="wholeEgg" type="number"></td></tr>
+<tr><td>Egg Whites</td><td><input id="eggWhite" type="number"></td></tr>
+<tr><td>Whey Scoops</td><td><input id="whey" type="number"></td></tr>
+<tr><td>Mass Gainer</td><td><input id="gainer" type="number"></td></tr>
+<tr><td>Milk (ml)</td><td><input id="milk" type="number"></td></tr>
+</table>
+
+<label>Bodyweight (kg)</label>
+<input id="weight" type="number" step="0.1">
+
+<h2 id="calories">Calories: 0</h2>
+<h2 id="protein">Protein: 0</h2>
+
+<div id="status">Status</div>
+
+<button onclick="saveDay()">Save Day</button>
+
+<a href="weekly.html">View Weekly Summary</a>
+
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
