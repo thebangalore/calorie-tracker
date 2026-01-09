@@ -1,10 +1,10 @@
-const inputs = ["rice","oats","chicken","wholeEgg","eggWhite","whey","gainer","milk"];
+const foodInputs = ["rice","oats","chicken","wholeEgg","eggWhite","whey","gainer","milk"];
 
 function calculateTotals() {
   let calories = 0;
   let protein = 0;
 
-  inputs.forEach(key => {
+  foodInputs.forEach(key => {
     let val = Number(document.getElementById(key).value || 0);
     let factor =
       ["rice","oats","chicken"].includes(key) ? val / 100 :
@@ -13,6 +13,12 @@ function calculateTotals() {
     calories += factor * FOOD_DATA[key].calories;
     protein += factor * FOOD_DATA[key].protein;
   });
+
+  let extraCalories = Number(document.getElementById("extraCalories").value || 0);
+  let extraProtein = Number(document.getElementById("extraProtein").value || 0);
+
+  calories += extraCalories;
+  protein += extraProtein;
 
   document.getElementById("calories").innerText = `Calories: ${Math.round(calories)}`;
   document.getElementById("protein").innerText = `Protein: ${Math.round(protein)}`;
@@ -23,11 +29,18 @@ function calculateTotals() {
   let status = document.getElementById("status");
   status.className = "";
 
-  if (diff < -200) { status.innerText = "Under"; status.classList.add("under"); }
-  else if (Math.abs(diff) <= 200) { status.innerText = "On Track"; status.classList.add("ontrack"); }
-  else { status.innerText = "Over"; status.classList.add("over"); }
+  if (diff < -200) {
+    status.innerText = "Under";
+    status.classList.add("under");
+  } else if (Math.abs(diff) <= 200) {
+    status.innerText = "On Track";
+    status.classList.add("ontrack");
+  } else {
+    status.innerText = "Over";
+    status.classList.add("over");
+  }
 
-  return { calories, protein };
+  return { calories, protein, extraCalories, extraProtein };
 }
 
 document.addEventListener("input", calculateTotals);
@@ -48,7 +61,9 @@ function saveDay() {
     calories: Math.round(totals.calories),
     protein: Math.round(totals.protein),
     weight: Number(document.getElementById("weight").value || 0),
-    target: Number(document.getElementById("targetCalories").value || 0)
+    target: Number(document.getElementById("targetCalories").value || 0),
+    extraCalories: totals.extraCalories,
+    extraProtein: totals.extraProtein
   };
 
   let index = log.findIndex(d => d.date === date);
@@ -68,12 +83,23 @@ if (window.location.pathname.includes("weekly")) {
   let calories = log.map(d => d.calories);
   let protein = log.map(d => d.protein);
 
-  new Chart(weightChart, { type:"line", data:{ labels, datasets:[{label:"Weight (kg)", data:weight}] } });
-  new Chart(calorieChart, { type:"line", data:{ labels, datasets:[{label:"Calories", data:calories}] } });
-  new Chart(proteinChart, { type:"line", data:{ labels, datasets:[{label:"Protein (g)", data:protein}] } });
+  new Chart(weightChart, {
+    type: "line",
+    data: { labels, datasets: [{ label: "Weight (kg)", data: weight }] }
+  });
+
+  new Chart(calorieChart, {
+    type: "line",
+    data: { labels, datasets: [{ label: "Calories", data: calories }] }
+  });
+
+  new Chart(proteinChart, {
+    type: "line",
+    data: { labels, datasets: [{ label: "Protein (g)", data: protein }] }
+  });
 
   let last7 = weight.slice(-7);
-  let prev7 = weight.slice(-14,-7);
+  let prev7 = weight.slice(-14, -7);
   let avgLast = last7.reduce((a,b)=>a+b,0)/last7.length;
   let avgPrev = prev7.length ? prev7.reduce((a,b)=>a+b,0)/prev7.length : avgLast;
   let change = avgLast - avgPrev;
